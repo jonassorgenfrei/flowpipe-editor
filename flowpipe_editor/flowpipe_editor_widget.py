@@ -23,7 +23,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.qt_nodes_map = {}
         
         # get the main context menu.
-        context_menu = self.qt_graph.get_context_menu("graph")
+        context_menu = self.graph.get_context_menu("graph")
 
         # add a layout menu
         layout_menu = context_menu.add_menu("Layout")
@@ -34,8 +34,8 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """
         Auto layout the nodes down stream.
         """
-        nodes = self.qt_graph.selected_nodes() or self.qt_graph.all_nodes()
-        self.qt_graph.auto_layout_nodes(nodes=nodes, down_stream=True)
+        nodes = self.graph.selected_nodes() or self.graph.all_nodes()
+        self.graph.auto_layout_nodes(nodes=nodes, down_stream=True)
 
     def layout_graph_up(self):
         """
