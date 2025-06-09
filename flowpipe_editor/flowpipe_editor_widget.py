@@ -22,6 +22,35 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.fp_nodes_map = {}
         self.qt_nodes_map = {}
         
+        # get the main context menu.
+        context_menu = self.qt_graph.get_context_menu("graph")
+
+        # add a layout menu
+        layout_menu = context_menu.add_menu("Layout")
+        layout_menu.add_command("Horizontal", self.layout_graph_down, "Shift+1")
+        layout_menu.add_command("Vertical", self.layout_graph_up, "Shift+2")
+        
+    def layout_graph_down(self):
+        """
+        Auto layout the nodes down stream.
+        """
+        nodes = self.qt_graph.selected_nodes() or self.qt_graph.all_nodes()
+        self.qt_graph.auto_layout_nodes(nodes=nodes, down_stream=True)
+
+    def layout_graph_up(self):
+        """
+        Auto layout the nodes up stream.
+        """
+        nodes = self.qt_graph.selected_nodes() or self.qt_graph.all_nodes()
+        self.qt_graph.auto_layout_nodes(nodes=nodes, down_stream=False)
+    
+    def clear(self):
+        self.fp_nodes_map = {}
+        self.qt_nodes_map = {}
+        self.flowpipe_graph = Graph()
+        self.graph.clear_session()
+        self.node_deselected()
+    
     def _add_node(self, fp_node, point):
         qt_node = self.graph.create_node(
             "flowpipe.FlowpipeNode", name=fp_node.name, pos=[point.x(), point.y()]
