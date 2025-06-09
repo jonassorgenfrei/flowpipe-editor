@@ -41,8 +41,8 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """
         Auto layout the nodes up stream.
         """
-        nodes = self.qt_graph.selected_nodes() or self.qt_graph.all_nodes()
-        self.qt_graph.auto_layout_nodes(nodes=nodes, down_stream=False)
+        nodes = self.graph.selected_nodes() or self.graph.all_nodes()
+        self.graph.auto_layout_nodes(nodes=nodes, down_stream=False)
     
     def clear(self):
         self.fp_nodes_map = {}
