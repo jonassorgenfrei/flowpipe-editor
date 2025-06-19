@@ -66,7 +66,6 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         
     def load_graph(self, graph: Graph):
         self.flowpipe_graph = graph
-        print(graph.name)
         x_pos = 0
         for row in graph.evaluation_matrix:
             y_pos = 0
