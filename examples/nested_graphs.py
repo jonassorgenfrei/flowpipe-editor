@@ -64,7 +64,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     window = QtWidgets.QWidget()
-    window.setWindowTitle("Flowpipe-Editor World Clock Example")
+    window.setWindowTitle("Flowpipe-Editor Nestd Graphs Example")
     window.resize(1100, 800)
 
     flowpipe_editor_widget = FlowpipeEditorWidget(parent=window)

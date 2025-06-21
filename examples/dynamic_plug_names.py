@@ -88,12 +88,12 @@ def get_facematch_graph(threshold):
 
 if __name__ == "__main__":
     facematch = get_facematch_graph(1)
-
+    
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
 
     window = QtWidgets.QWidget()
-    window.setWindowTitle("Flowpipe-Editor World Clock Example")
+    window.setWindowTitle("Flowpipe-Editor Dynamic Plug Names Example")
     window.resize(1100, 800)
 
     flowpipe_editor_widget = FlowpipeEditorWidget(parent=window)
