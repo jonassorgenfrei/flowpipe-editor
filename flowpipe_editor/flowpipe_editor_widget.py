@@ -2,6 +2,10 @@ from Qt import QtWidgets, QtCore
 
 from NodeGraphQt import BaseNode, NodeGraph
 from flowpipe import Graph
+from flowpipe_editor.widgets.properties_bin.node_property_widgets import PropertiesBinWidget
+from pathlib import Path
+
+BASE_PATH = Path(__file__).parent.resolve()
 
 class FlowpipeNode(BaseNode):
     __identifier__ = "flowpipe"
@@ -18,7 +22,18 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph = NodeGraph()
         self.graph.register_node(FlowpipeNode)
         self.layout().addWidget(self.graph.widget)
-        
+         # create a node properties bin widget.
+        properties_bin = PropertiesBinWidget(parent=self, node_graph=self.graph)
+        properties_bin.setWindowFlags(QtCore.Qt.Tool)
+
+        # example show the node properties bin widget when a node is double-clicked.
+        def display_properties_bin(node):
+            if not properties_bin.isVisible():
+                properties_bin.show()
+
+        # wire function to "node_double_clicked" signal.
+        self.graph.node_double_clicked.connect(display_properties_bin)
+
         self.fp_nodes_map = {}
         self.qt_nodes_map = {}
         
@@ -55,6 +70,13 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         qt_node = self.graph.create_node(
             "flowpipe.FlowpipeNode", name=fp_node.name, pos=[point.x(), point.y()]
         )
+
+        interpreter = fp_node.metadata.get("interpreter") if fp_node.metadata else None
+
+        # set icon based on interpreter
+        if interpreter and "houdini" == interpreter:
+            qt_node.set_icon(Path(BASE_PATH, 'icons', 'houdini_badge_flat.png'))
+
         for input_ in fp_node.all_inputs().values():
             qt_node.add_input(input_.name)
         for output in fp_node.all_outputs().values():
