@@ -4,6 +4,10 @@ from Qt import QtWidgets
 from flowpipe import Graph, Node
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
+@Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
+def MayaSceneGeneration():
+    return {"scene_file": "/usd/scene.usd"}
+
 @Node(outputs=["renderings"], metadata={"interpreter": "houdini"})
 def HoudiniRender(frames, scene_file):
     return {"renderings": "/renderings/file.%04d.exr"}
@@ -41,15 +45,19 @@ if __name__ == "__main__":
     slapcomp = CreateSlapComp(graph=graph, template="nuke_template.nk")
     update_database = UpdateDatabase(graph=graph, id_=123456)
 
+    scene_creation = MayaSceneGeneration(graph=graph)    
+    
     for i in range(0, frames, batch_size):
         houdini_render = HoudiniRender(
             name="HoudiniRender{0}-{1}".format(i, i + batch_size),
             graph=graph,
             frames=range(i, i + batch_size),
-            scene_file="/scene/for/rendering.ma",
         )
         check_images = CheckImages(
             name="CheckImages{0}-{1}".format(i, i + batch_size), graph=graph
+        )
+        scene_creation.outputs["scene_file"].connect(
+            houdini_render.inputs["scene_file"]
         )
         houdini_render.outputs["renderings"].connect(
             check_images.inputs["images"]
