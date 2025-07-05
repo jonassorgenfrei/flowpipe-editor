@@ -22,7 +22,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph = NodeGraph()
         self.graph.register_node(FlowpipeNode)
         self.layout().addWidget(self.graph.widget)
-         # create a node properties bin widget.
+        # create a node properties bin widget.
         properties_bin = PropertiesBinWidget(parent=self, node_graph=self.graph)
         properties_bin.setWindowFlags(QtCore.Qt.Tool)
 
@@ -74,9 +74,20 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         interpreter = fp_node.metadata.get("interpreter") if fp_node.metadata else None
 
         # set icon based on interpreter
-        if interpreter and "houdini" == interpreter:
-            qt_node.set_icon(Path(BASE_PATH, 'icons', 'houdini_badge_flat.png'))
-
+        if interpreter:
+            if interpreter == "houdini":
+                qt_node.set_icon(Path(BASE_PATH, 'icons', 'houdini.png'))
+            elif interpreter == "nuke":
+                qt_node.set_icon(Path(BASE_PATH, 'icons', 'nuke.png'))
+            elif interpreter == "mari":
+                qt_node.set_icon(Path(BASE_PATH, 'icons', 'mari.png'))
+            elif interpreter == "maya":
+                qt_node.set_icon(Path(BASE_PATH, 'icons', 'maya.png'))
+            else:
+                qt_node.set_icon(Path(BASE_PATH, 'icons', 'python.png'))
+        else:
+            qt_node.set_icon(Path(BASE_PATH, 'icons', 'python.png'))
+            
         for input_ in fp_node.all_inputs().values():
             qt_node.add_input(input_.name)
         for output in fp_node.all_outputs().values():
