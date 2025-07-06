@@ -1,8 +1,12 @@
 import sys
-from Qt import QtWidgets
+from pathlib import Path
 
 from flowpipe import Graph, Node
+from Qt import QtGui, QtWidgets
+
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
+
+BASE_PATH = Path(__file__).parent.parent.resolve()
 
 @Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
 def MayaSceneGeneration():
@@ -84,6 +88,7 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor VFX Rendering Example")

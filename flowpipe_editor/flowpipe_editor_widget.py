@@ -1,9 +1,11 @@
-from Qt import QtWidgets, QtCore
-
-from NodeGraphQt import BaseNode, NodeGraph
-from flowpipe import Graph
-from flowpipe_editor.widgets.properties_bin.node_property_widgets import PropertiesBinWidget
 from pathlib import Path
+
+from flowpipe import Graph
+from NodeGraphQt import BaseNode, NodeGraph
+from Qt import QtCore, QtWidgets
+
+from flowpipe_editor.widgets.properties_bin.node_property_widgets import \
+    PropertiesBinWidget
 
 BASE_PATH = Path(__file__).parent.resolve()
 

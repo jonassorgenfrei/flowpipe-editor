@@ -1,8 +1,12 @@
 import sys
-from Qt import QtWidgets
+from pathlib import Path
 
-from flowpipe import Graph, INode, Node, InputPlug, OutputPlug
+from flowpipe import Graph, INode, InputPlug, Node, OutputPlug
+from Qt import QtGui, QtWidgets
+
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
+
+BASE_PATH = Path(__file__).parent.parent.resolve()
 
 class HireWorkers(INode):
     """A node can be derived from the INode interface.
@@ -68,33 +72,9 @@ if __name__ == "__main__":
     # Initial values can be set onto the input plugs for initialization
     party.inputs["attendees"]["4"].value = "Homeowner"
 
-
-    print("---------------------------------------")
-    print(graph.name)
-    print(graph)
-    print(graph.list_repr())
-    print("---------------------------------------")
-    graph.evaluate()
-    print("---------------------------------------")
-
-
-    graph = Graph(name="Celebrate a Birthday Party")
-
-
-    @Node(outputs=["people"])
-    def InvitePeople(amount):
-        people = ["John", "Jane", "Mike", "Michelle"]
-        d = {"people.{0}".format(i): people[i] for i in range(amount)}
-        d["people"] = {people[i]: people[i] for i in range(amount)}
-        return d
-
-
-    invite = InvitePeople(graph=graph, amount=4)
-    birthday_party = Party(graph=graph, name="Birthday Party")
-    invite.outputs["people"] >> birthday_party.inputs["attendees"]
-
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor House And Birthday Example")
