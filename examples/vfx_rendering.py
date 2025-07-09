@@ -1,31 +1,46 @@
 import sys
-from Qt import QtWidgets
+from pathlib import Path
 
 from flowpipe import Graph, Node
+from Qt import QtGui, QtWidgets
+
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
-@Node(outputs=["renderings"], metadata={"interpreter": "maya"})
-def MayaRender(frames, scene_file):
-    return {"renderings": "/renderings/file.%04d.exr"}
+BASE_PATH = Path(__file__).parent.parent.resolve()
 
+@Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
+def MayaSceneGeneration():
+    """Creates a Maya scene file for rendering.
+    """
+    return {"scene_file": "/usd/scene.usd"}
+
+@Node(outputs=["renderings"], metadata={"interpreter": "houdini"})
+def HoudiniRender(frames, scene_file):
+    """Creates a Houdini scene file for rendering.
+    """
+    return {"renderings": "/renderings/file.%04d.exr"}
 
 @Node(outputs=["images"])
 def CheckImages(images):
+    """Check if the images are valid and return them."""
     return {"images": images}
 
 
-@Node(outputs=["slapcomp"])
+@Node(outputs=["slapcomp"], metadata={"interpreter": "nuke"})
 def CreateSlapComp(images, template):
+    """Create a nuke slapcomp scene file from the given images and template."""
     return {"slapcomp": "slapcomp.nk"}
 
 
 @Node(outputs=["renderings"], metadata={"interpreter": "nuke"})
 def NukeRender(frames, scene_file):
+    """Renders the slapcomp scene file using Nuke."""
     return {"renderings": "/renderings/file.%04d.exr"}
 
 
 @Node(outputs=["quicktime"])
 def Quicktime(images):
+    """Create a quicktime movie from the rendered images."""
     return {"quicktime": "resulting.mov"}
 
 
@@ -41,17 +56,21 @@ if __name__ == "__main__":
     slapcomp = CreateSlapComp(graph=graph, template="nuke_template.nk")
     update_database = UpdateDatabase(graph=graph, id_=123456)
 
+    scene_creation = MayaSceneGeneration(graph=graph)    
+    
     for i in range(0, frames, batch_size):
-        maya_render = MayaRender(
-            name="MayaRender{0}-{1}".format(i, i + batch_size),
+        houdini_render = HoudiniRender(
+            name="HoudiniRender{0}-{1}".format(i, i + batch_size),
             graph=graph,
             frames=range(i, i + batch_size),
-            scene_file="/scene/for/rendering.ma",
         )
         check_images = CheckImages(
             name="CheckImages{0}-{1}".format(i, i + batch_size), graph=graph
         )
-        maya_render.outputs["renderings"].connect(
+        scene_creation.outputs["scene_file"].connect(
+            houdini_render.inputs["scene_file"]
+        )
+        houdini_render.outputs["renderings"].connect(
             check_images.inputs["images"]
         )
         check_images.outputs["images"].connect(
@@ -76,6 +95,7 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor VFX Rendering Example")
