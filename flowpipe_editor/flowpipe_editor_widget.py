@@ -1,26 +1,35 @@
+import json
 from pathlib import Path
 
 from flowpipe import Graph
 from NodeGraphQt import BaseNode, NodeGraph
 from Qt import QtCore, QtWidgets
 
-from flowpipe_editor.widgets.properties_bin.node_property_widgets import \
-    PropertiesBinWidget
+from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
+    PropertiesBinWidget,
+)
 
 BASE_PATH = Path(__file__).parent.resolve()
+
 
 class FlowpipeNode(BaseNode):
     __identifier__ = "flowpipe"
     NODE_NAME = "FlowpipeNode"
+    fp_node = None
+
+    def __init__(self, **kwargs):
+        super(FlowpipeNode, self).__init__(**kwargs)
+        self.fp_node = None
+
 
 class FlowpipeEditorWidget(QtWidgets.QWidget):
     """Flowpipe editor widget for visualize flowpipe graphs."""
-    
-    def __init__(self, parent:QtWidgets.QWidget=None):
+
+    def __init__(self, parent: QtWidgets.QWidget = None):
         super(FlowpipeEditorWidget, self).__init__(parent)
         self.setLayout(QtWidgets.QVBoxLayout(self))
         self.layout().setContentsMargins(0, 0, 0, 0)
-        
+
         self.graph = NodeGraph()
         self.graph.register_node(FlowpipeNode)
         self.layout().addWidget(self.graph.widget)
@@ -36,9 +45,6 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         # wire function to "node_double_clicked" signal.
         self.graph.node_double_clicked.connect(display_properties_bin)
 
-        self.fp_nodes_map = {}
-        self.qt_nodes_map = {}
-        
         # get the main context menu.
         context_menu = self.graph.get_context_menu("graph")
 
@@ -46,7 +52,8 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         layout_menu = context_menu.add_menu("Layout")
         layout_menu.add_command("Horizontal", self.layout_graph_down, "Shift+1")
         layout_menu.add_command("Vertical", self.layout_graph_up, "Shift+2")
-        
+
+
     def layout_graph_down(self):
         """
         Auto layout the nodes down stream.
@@ -60,45 +67,43 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """
         nodes = self.graph.selected_nodes() or self.graph.all_nodes()
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=False)
-    
+
     def clear(self):
-        self.fp_nodes_map = {}
-        self.qt_nodes_map = {}
         self.flowpipe_graph = Graph()
         self.graph.clear_session()
         self.node_deselected()
-    
+
     def _add_node(self, fp_node, point):
         qt_node = self.graph.create_node(
             "flowpipe.FlowpipeNode", name=fp_node.name, pos=[point.x(), point.y()]
         )
-
+        qt_node.fp_node = fp_node
         interpreter = fp_node.metadata.get("interpreter") if fp_node.metadata else None
 
         # set icon based on interpreter
         if interpreter:
             if interpreter == "houdini":
-                qt_node.set_icon(Path(BASE_PATH, 'icons', 'houdini.png'))
+                qt_node.set_icon(Path(BASE_PATH, "icons", "houdini.png"))
             elif interpreter == "nuke":
-                qt_node.set_icon(Path(BASE_PATH, 'icons', 'nuke.png'))
+                qt_node.set_icon(Path(BASE_PATH, "icons", "nuke.png"))
             elif interpreter == "mari":
-                qt_node.set_icon(Path(BASE_PATH, 'icons', 'mari.png'))
+                qt_node.set_icon(Path(BASE_PATH, "icons", "mari.png"))
             elif interpreter == "maya":
-                qt_node.set_icon(Path(BASE_PATH, 'icons', 'maya.png'))
+                qt_node.set_icon(Path(BASE_PATH, "icons", "maya.png"))
             else:
-                qt_node.set_icon(Path(BASE_PATH, 'icons', 'python.png'))
+                qt_node.set_icon(Path(BASE_PATH, "icons", "python.png"))
         else:
-            qt_node.set_icon(Path(BASE_PATH, 'icons', 'python.png'))
-            
+            qt_node.set_icon(Path(BASE_PATH, "icons", "python.png"))
+
         for input_ in fp_node.all_inputs().values():
             qt_node.add_input(input_.name)
         for output in fp_node.all_outputs().values():
             qt_node.add_output(output.name)
-        self.fp_nodes_map[qt_node.id] = fp_node
-        self.qt_nodes_map[qt_node.id] = qt_node
-        self.graph.clear_selection()
-        return qt_node
         
+        self.graph.clear_selection()
+        
+        return qt_node
+
     def load_graph(self, graph: Graph):
         self.flowpipe_graph = graph
         x_pos = 0

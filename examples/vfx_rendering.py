@@ -10,30 +10,37 @@ BASE_PATH = Path(__file__).parent.parent.resolve()
 
 @Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
 def MayaSceneGeneration():
+    """Creates a Maya scene file for rendering.
+    """
     return {"scene_file": "/usd/scene.usd"}
 
 @Node(outputs=["renderings"], metadata={"interpreter": "houdini"})
 def HoudiniRender(frames, scene_file):
+    """Creates a Houdini scene file for rendering.
+    """
     return {"renderings": "/renderings/file.%04d.exr"}
-
 
 @Node(outputs=["images"])
 def CheckImages(images):
+    """Check if the images are valid and return them."""
     return {"images": images}
 
 
-@Node(outputs=["slapcomp"])
+@Node(outputs=["slapcomp"], metadata={"interpreter": "nuke"})
 def CreateSlapComp(images, template):
+    """Create a nuke slapcomp scene file from the given images and template."""
     return {"slapcomp": "slapcomp.nk"}
 
 
 @Node(outputs=["renderings"], metadata={"interpreter": "nuke"})
 def NukeRender(frames, scene_file):
+    """Renders the slapcomp scene file using Nuke."""
     return {"renderings": "/renderings/file.%04d.exr"}
 
 
 @Node(outputs=["quicktime"])
 def Quicktime(images):
+    """Create a quicktime movie from the rendered images."""
     return {"quicktime": "resulting.mov"}
 
 

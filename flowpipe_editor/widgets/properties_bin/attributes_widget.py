@@ -1,13 +1,10 @@
-from __future__ import annotations
-
 from Qt import QtWidgets
-from six.moves import range
 
 from . import attribute_widgets
 
 
 class AttributesWidget(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, plugs, parent=None):
         super(AttributesWidget, self).__init__(parent)
         self.attributes = {}
         self.setLayout(QtWidgets.QVBoxLayout(self))
@@ -18,8 +15,6 @@ class AttributesWidget(QtWidgets.QWidget):
         self.form = QtWidgets.QFormLayout(self.attributes_widget)
         self.scrollarea.setWidget(self.attributes_widget)
 
-    def initialize(self, plugs=None):
-        self.attributes.clear()
         for index in list(range(self.form.count()))[::-1]:
             item = self.form.takeAt(index)
             widget = item.widget()
