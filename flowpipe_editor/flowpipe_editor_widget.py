@@ -18,7 +18,6 @@ class FlowpipeNode(BaseNode):
     """Flowpipe node for NodeGraphQt."""
     __identifier__ = "flowpipe"
     NODE_NAME = "FlowpipeNode"
-    fp_node = None
 
     def __init__(self, **kwargs):
         """Initialize the FlowpipeNode."""
