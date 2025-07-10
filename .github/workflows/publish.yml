@@ -18,6 +18,8 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
+      - name: Show version (debug)
+        run: poetry version
       - name: Publish
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
