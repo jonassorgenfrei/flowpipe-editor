@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 from . import attribute_widgets

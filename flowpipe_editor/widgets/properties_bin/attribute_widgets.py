@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-
+# pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 

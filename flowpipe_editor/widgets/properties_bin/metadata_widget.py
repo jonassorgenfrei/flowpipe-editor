@@ -1,4 +1,5 @@
 import json
+# pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 

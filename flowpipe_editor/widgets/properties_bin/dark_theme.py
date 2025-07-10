@@ -1,21 +1,22 @@
-from Qt.QtGui import QPalette, QColor
-from Qt.QtCore import Qt
+# pylint: disable=no-name-in-module
+from Qt import QtGui
+from Qt import QtCore
 
 
 def apply_dark_theme(widget):
-    palette = QPalette()
-    palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    palette.setColor(QPalette.WindowText, Qt.white)
-    palette.setColor(QPalette.Base, QColor(35, 35, 35))
-    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    palette.setColor(QPalette.ToolTipBase, Qt.white)
-    palette.setColor(QPalette.ToolTipText, Qt.white)
-    palette.setColor(QPalette.Text, Qt.white)
-    palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    palette.setColor(QPalette.ButtonText, Qt.white)
-    palette.setColor(QPalette.BrightText, Qt.red)
-    palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    palette.setColor(QPalette.HighlightedText, Qt.black)
+    palette = QtGui.QPalette()
+    palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Base, QtGui.QColor(35, 35, 35))
+    palette.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.ToolTipBase, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.ToolTipText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Text, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
+    palette.setColor(QtGui.QPalette.Link, QtGui.QColor(42, 130, 218))
+    palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(42, 130, 218))
+    palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
 
     widget.setPalette(palette)

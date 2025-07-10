@@ -1,13 +1,16 @@
+"""Flowpipe Editor Attributes Widget"""
 from __future__ import annotations
-
+# pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 from . import attribute_widgets
 
 
 class AttributesWidget(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        super(AttributesWidget, self).__init__(parent)
+    """Widget to display and manage attributes of Flowpipe nodes."""
+    def __init__(self, plugs, parent:QtWidgets.QWidget=None):
+        """Initialize the AttributesWidget."""
+        super().__init__(parent)
         self.attributes = {}
         self.setLayout(QtWidgets.QVBoxLayout(self))
         self.scrollarea = QtWidgets.QScrollArea(self)
@@ -17,8 +20,6 @@ class AttributesWidget(QtWidgets.QWidget):
         self.form = QtWidgets.QFormLayout(self.attributes_widget)
         self.scrollarea.setWidget(self.attributes_widget)
 
-    def initialize(self, plugs=None):
-        self.attributes.clear()
         for index in list(range(self.form.count()))[::-1]:
             item = self.form.takeAt(index)
             widget = item.widget()

@@ -1,7 +1,7 @@
 import os
 import textwrap
 import webbrowser
-
+# pylint: disable=no-name-in-module
 from Qt import QtCore, QtWidgets
 
 

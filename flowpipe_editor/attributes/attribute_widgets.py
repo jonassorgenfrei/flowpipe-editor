@@ -1,19 +1,22 @@
+"""Flowpipe Editor Attribute Helper Widgets"""
 from __future__ import annotations
 
 import json
-
+# pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 
 class IPlugWidget(QtWidgets.QWidget):
-    def __init__(self, parent, plug=None):
-        super(IPlugWidget, self).__init__(parent)
+    """Base class for plug widgets."""
+    def __init__(self, parent:QtWidgets.QWidget, plug=None):
+        super().__init__(parent)
         self.plug = plug
 
 
 class DefaultPlugWidget(IPlugWidget):
+    """Default widget for displaying plug attributes."""
     def __init__(self, parent, plug):
-        super(DefaultPlugWidget, self).__init__(parent, plug)
+        super().__init__(parent, plug)
         self.setLayout(QtWidgets.QVBoxLayout(self))
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.lineedit = QtWidgets.QLineEdit(self)

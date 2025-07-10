@@ -1,8 +1,10 @@
 """Class that provides the Qt Widget."""
+
 from pathlib import Path
 
 from flowpipe import Graph
 from NodeGraphQt import BaseNode, NodeGraph
+# pylint: disable=no-name-in-module
 from Qt import QtCore, QtWidgets
 
 from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
@@ -13,12 +15,14 @@ BASE_PATH = Path(__file__).parent.resolve()
 
 
 class FlowpipeNode(BaseNode):
+    """Flowpipe node for NodeGraphQt."""
     __identifier__ = "flowpipe"
     NODE_NAME = "FlowpipeNode"
     fp_node = None
 
     def __init__(self, **kwargs):
-        super(FlowpipeNode, self).__init__(**kwargs)
+        """Initialize the FlowpipeNode."""
+        super().__init__(**kwargs)
         self.fp_node = None
 
 
@@ -26,7 +30,12 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
     """Flowpipe editor widget for visualize flowpipe graphs."""
 
     def __init__(self, parent: QtWidgets.QWidget = None):
-        super(FlowpipeEditorWidget, self).__init__(parent)
+        """Initialize the Flowpipe editor widget.
+
+        Args:
+            parent (QtWidgets.QWidget, optional): Parent Qt Widget. Defaults to None.
+        """
+        super().__init__(parent)
         self.setLayout(QtWidgets.QVBoxLayout(self))
         self.layout().setContentsMargins(0, 0, 0, 0)
 
@@ -35,11 +44,13 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph.register_node(FlowpipeNode)
         self.layout().addWidget(self.graph.widget)
         # create a node properties bin widget.
-        properties_bin = PropertiesBinWidget(parent=self, node_graph=self.graph)
+        properties_bin = PropertiesBinWidget(
+            parent=self, node_graph=self.graph
+        )
         properties_bin.setWindowFlags(QtCore.Qt.Tool)
 
         # example show the node properties bin widget when a node is double-clicked.
-        def display_properties_bin(node):
+        def display_properties_bin():
             if not properties_bin.isVisible():
                 properties_bin.show()
 
@@ -51,9 +62,10 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         # add a layout menu
         layout_menu = context_menu.add_menu("Layout")
-        layout_menu.add_command("Horizontal", self.layout_graph_down, "Shift+1")
+        layout_menu.add_command(
+            "Horizontal", self.layout_graph_down, "Shift+1"
+        )
         layout_menu.add_command("Vertical", self.layout_graph_up, "Shift+2")
-
 
     def layout_graph_down(self):
         """
@@ -70,16 +82,22 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=False)
 
     def clear(self):
+        """Clear the graph and reset the flowpipe graph."""
         self.flowpipe_graph = Graph()
         self.graph.clear_session()
         self.node_deselected()
 
     def _add_node(self, fp_node, point):
+        """Helper function to add a Flowpipe node to the graph."""
         qt_node = self.graph.create_node(
-            "flowpipe.FlowpipeNode", name=fp_node.name, pos=[point.x(), point.y()]
+            "flowpipe.FlowpipeNode",
+            name=fp_node.name,
+            pos=[point.x(), point.y()],
         )
         qt_node.fp_node = fp_node
-        interpreter = fp_node.metadata.get("interpreter") if fp_node.metadata else None
+        interpreter = (
+            fp_node.metadata.get("interpreter") if fp_node.metadata else None
+        )
 
         # set icon based on interpreter
         if interpreter:
@@ -100,12 +118,17 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
             qt_node.add_input(input_.name)
         for output in fp_node.all_outputs().values():
             qt_node.add_output(output.name)
-        
+
         self.graph.clear_selection()
-        
+
         return qt_node
 
     def load_graph(self, graph: Graph):
+        """Load a Flowpipe graph into the editor widget.
+        
+        Args:
+            graph (Graph): Flowpipe graph to load.
+        """
         self.flowpipe_graph = graph
         x_pos = 0
         for row in graph.evaluation_matrix:
@@ -118,14 +141,14 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         for fp_node in graph.all_nodes:
             for i, output in enumerate(fp_node.all_outputs().values()):
                 for connection in output.connections:
-                    in_index = list(connection.node.all_inputs().values()).index(
-                        connection
-                    )
+                    in_index = list(
+                        connection.node.all_inputs().values()
+                    ).index(connection)
                     self.graph.get_node_by_name(fp_node.name).set_output(
                         i,
-                        self.graph.get_node_by_name(connection.node.name).input(
-                            in_index
-                        ),
+                        self.graph.get_node_by_name(
+                            connection.node.name
+                        ).input(in_index),
                     )
 
         nodes = self.graph.all_nodes()

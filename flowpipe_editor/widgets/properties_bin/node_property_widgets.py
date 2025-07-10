@@ -10,6 +10,7 @@ from NodeGraphQt.custom_widgets.properties_bin.node_property_widgets import (
     _PropertiesList,
 )
 from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import PropLineEdit
+# pylint: disable=no-name-in-module
 from Qt import QtCompat, QtCore, QtGui, QtWidgets
 
 from .attributes_widget import AttributesWidget
