@@ -35,7 +35,9 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.9"
 ascii-canvas = ">=2.0.0"
-
+flowpipe = "^1.0.4"
+NodeGraphQt = "^0.6.3"
+"Qt.py" = "^1.4.6"
 
 [tool.poetry.plugins."poetry.plugin"]
 "dynamic-versioning" = "poetry_dynamic_versioning.plugin"
@@ -50,9 +52,6 @@ pre-commit = "^3.5.0"
 pylint = "^3.0.1"
 isort = { version = "^5.12.0", extras = ["pyproject"] }
 mypy = "^1.6.1"
-flowpipe = "^1.0.4"
-NodeGraphQt = "^0.6.3"
-"Qt.py" = "^1.4.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
