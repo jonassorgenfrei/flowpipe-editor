@@ -46,6 +46,7 @@ isort = { version = "^5.12.0", extras = ["pyproject"] }
 mypy = "^1.6.1"
 flowpipe = "^1.0.4"
 NodeGraphQt = "^0.6.3"
+Qt.py = "^1.4.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
