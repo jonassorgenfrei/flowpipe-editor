@@ -13,6 +13,7 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 graph = Graph(name="Rendering")
 
 # ... create nodes and append to graph ...
+
 window = QtWidgets.QWidget()
 
 flowpipe_editor_widget = FlowpipeEditorWidget(parent=parentWidget)
