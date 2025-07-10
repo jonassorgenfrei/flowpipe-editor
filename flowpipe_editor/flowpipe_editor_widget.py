@@ -1,3 +1,4 @@
+"""Class that provides the Qt Widget."""
 from pathlib import Path
 
 from flowpipe import Graph
@@ -30,6 +31,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.graph = NodeGraph()
+        self.flowpipe_graph = None
         self.graph.register_node(FlowpipeNode)
         self.layout().addWidget(self.graph.widget)
         # create a node properties bin widget.

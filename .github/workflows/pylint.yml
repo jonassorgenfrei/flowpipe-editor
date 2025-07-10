@@ -1,0 +1,21 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  pylint:
+    name: Pylint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade poetry wheel
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Analysing the code with pylint
+        run: |
+          poetry run pylint ./flowpipe_editor
