@@ -5,6 +5,23 @@ QT Editor for the flowpipe framework based on NodeGraphQt.
 
 ![flowpipe-editor](https://raw.githubusercontent.com/jonassorgenfrei/flowpipe-editor/main/docs/img/flowpipe-editor.png)
 
+## Example
+```python
+from flowpipe import Graph
+from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
+
+graph = Graph(name="Rendering")
+
+# ... create nodes and append to graph ...
+window = QtWidgets.QWidget()
+
+flowpipe_editor_widget = FlowpipeEditorWidget(parent=parentWidget)
+flowpipe_editor_widget.load_graph(graph)
+
+# .. add widget to window 
+
+```
+
 ## Requirements
 The requirements can be installed via pip.
 
