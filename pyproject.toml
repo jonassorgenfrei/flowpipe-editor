@@ -1,0 +1,52 @@
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+skip = ["flowpipe/__init__.py"]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "duplicate-code",
+    "no-else-raise",
+    "too-many-function-args",
+    "too-many-locals",
+    "too-many-arguments",
+    "too-few-public-methods",
+    "too-many-instance-attributes",
+    "too-many-public-methods",
+]
+
+[tool.poetry]
+name = "Flowpipe_Editor"
+version = "0.0.1"
+description = "A lightweight framework for flow-based programming in python."
+authors = ["Jonas Sorgenfrei <jonas_sorgenfrei@yahoo.de>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/jonassorgenfrei/flowpipe-editor"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+ascii-canvas = ">=2.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+numpy = "^1.26.2"
+pre-commit = "^3.5.0"
+pylint = "^3.0.1"
+isort = { version = "^5.12.0", extras = ["pyproject"] }
+mypy = "^1.6.1"
+flowpipe = "^2.0.1"
+NodeGraphQt = "^1.4.6"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
