@@ -1,0 +1,1 @@
+from flowpipe_editor_widget import FlowpipeEditorWidget
