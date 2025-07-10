@@ -7,6 +7,9 @@ from NodeGraphQt import BaseNode, NodeGraph
 # pylint: disable=no-name-in-module
 from Qt import QtCore, QtWidgets
 
+from flowpipe_editor.widgets.dark_theme import (
+    apply_dark_theme
+)
 from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
     PropertiesBinWidget,
 )
@@ -35,26 +38,41 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
             parent (QtWidgets.QWidget, optional): Parent Qt Widget. Defaults to None.
         """
         super().__init__(parent)
-        self.setLayout(QtWidgets.QVBoxLayout(self))
+        
+        #apply_dark_theme(properties_bin)
+        self.setLayout(QtWidgets.QHBoxLayout(self))
+        
+        # Create a horizontal splitter (left/right layout)
+        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, parent=self)
+
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.graph = NodeGraph()
         self.flowpipe_graph = None
         self.graph.register_node(FlowpipeNode)
-        self.layout().addWidget(self.graph.widget)
+        
+        self.splitter.addWidget(self.graph.widget)
+        
+        self.layout().addWidget(self.splitter)
+        
         # create a node properties bin widget.
         properties_bin = PropertiesBinWidget(
             parent=self, node_graph=self.graph
         )
-        properties_bin.setWindowFlags(QtCore.Qt.Tool)
 
+        properties_bin.setAutoFillBackground(True)
+        self.splitter.addWidget(properties_bin)
+
+        # hide initially
+        self.splitter.setSizes([1, 0])
+        
         # example show the node properties bin widget when a node is double-clicked.
         def display_properties_bin():
-            if not properties_bin.isVisible():
-                properties_bin.show()
+            if self.splitter.sizes()[1] == 0:
+                self.splitter.setSizes([700, 10])
 
         # wire function to "node_double_clicked" signal.
-        self.graph.node_double_clicked.connect(display_properties_bin)
+        self.graph.node_selected.connect(display_properties_bin)
 
         # get the main context menu.
         context_menu = self.graph.get_context_menu("graph")
@@ -65,6 +83,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
             "Horizontal", self.layout_graph_down, "Shift+1"
         )
         layout_menu.add_command("Vertical", self.layout_graph_up, "Shift+2")
+        apply_dark_theme(self)
 
     def layout_graph_down(self):
         """

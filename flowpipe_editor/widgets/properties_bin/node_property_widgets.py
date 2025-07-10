@@ -9,12 +9,15 @@ from NodeGraphQt.custom_widgets.properties_bin.node_property_widgets import (
     _PropertiesContainer,
     _PropertiesList,
 )
-from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import PropLineEdit
+from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import (
+    PropLineEdit,
+)
+
 # pylint: disable=no-name-in-module
 from Qt import QtCompat, QtCore, QtGui, QtWidgets
 
 from .attributes_widget import AttributesWidget
-from .dark_theme import apply_dark_theme
+from ..dark_theme import apply_dark_theme
 from .description import DescriptionWidget
 from .metadata_widget import MetadataWidget
 
@@ -41,7 +44,9 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         close_btn = QtWidgets.QPushButton()
         close_btn.setIcon(
             QtGui.QIcon(
-                self.style().standardIcon(QtWidgets.QStyle.SP_DialogCloseButton)
+                self.style().standardIcon(
+                    QtWidgets.QStyle.SP_DialogCloseButton
+                )
             )
         )
         close_btn.setMaximumWidth(40)
@@ -77,7 +82,9 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         self._port_connections = self._read_node(node)
 
     def __repr__(self):
-        return "<{} object at {}>".format(self.__class__.__name__, hex(id(self)))
+        return "<{} object at {}>".format(
+            self.__class__.__name__, hex(id(self))
+        )
 
     def _on_close(self):
         """
@@ -174,13 +181,16 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
                 "Description",
             )
             self.__tab.addTab(
-                AttributesWidget(plugs=node.fp_node.inputs, parent=self), "Inputs"
+                AttributesWidget(plugs=node.fp_node.inputs, parent=self),
+                "Inputs",
             )
             self.__tab.addTab(
-                AttributesWidget(plugs=node.fp_node.outputs, parent=self), "Outputs"
+                AttributesWidget(plugs=node.fp_node.outputs, parent=self),
+                "Outputs",
             )
             self.__tab.addTab(
-                MetadataWidget(metadata=node.fp_node.metadata, parent=self), "MetaData"
+                MetadataWidget(metadata=node.fp_node.metadata, parent=self),
+                "MetaData",
             )
 
         # add "Node" tab properties. (default props)
@@ -392,14 +402,16 @@ class PropertiesBinWidget(QtWidgets.QWidget):
 
         # wire up node graph.
         node_graph.add_properties_bin(self)
-        node_graph.node_double_clicked.connect(self.add_node)
+        node_graph.node_selected.connect(self.add_node)
         node_graph.nodes_deleted.connect(self.__on_nodes_deleted)
         node_graph.property_changed.connect(self.__on_graph_property_changed)
 
         apply_dark_theme(self)
 
     def __repr__(self):
-        return "<{} object at {}>".format(self.__class__.__name__, hex(id(self)))
+        return "<{} object at {}>".format(
+            self.__class__.__name__, hex(id(self))
+        )
 
     def __on_port_tree_visible_changed(self, node_id, visible, tree_widget):
         """
@@ -417,7 +429,8 @@ class PropertiesBinWidget(QtWidgets.QWidget):
             widget = self._prop_list.cellWidget(items[0].row(), 0)
             widget.adjustSize()
             QtCompat.QHeaderView.setSectionResizeMode(
-                self._prop_list.verticalHeader(), QtWidgets.QHeaderView.ResizeToContents
+                self._prop_list.verticalHeader(),
+                QtWidgets.QHeaderView.ResizeToContents,
             )
 
     def __on_prop_close(self, node_id):
