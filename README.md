@@ -5,6 +5,8 @@ QT Editor for the flowpipe framework based on NodeGraphQt.
 
 ![flowpipe-editor](https://raw.githubusercontent.com/jonassorgenfrei/flowpipe-editor/main/docs/img/flowpipe-editor.png)
 
+NOTE: In it's current state the Widget is a visualizer only not an editor.
+
 ## Example
 ```python
 from flowpipe import Graph
