@@ -1,4 +1,5 @@
-#!/usr/bin/python
+"""Flowpipe Node Property Editor Widget"""
+
 from collections import defaultdict
 
 from NodeGraphQt.custom_widgets.properties_bin.node_property_factory import (
@@ -36,7 +37,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
     property_closed = QtCore.Signal(str)
 
     def __init__(self, parent=None, node=None):
-        super(FlowpipeNodePropEditorWidget, self).__init__(parent)
+        super().__init__(parent)
         self.__node_id = node.id
         self.__tab_windows = {}
         self.__tab = QtWidgets.QTabWidget()
@@ -82,9 +83,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         self._port_connections = self._read_node(node)
 
     def __repr__(self):
-        return "<{} object at {}>".format(
-            self.__class__.__name__, hex(id(self))
-        )
+        return f"<{self.__class__.__name__} object at {hex(id(self))}>"
 
     def _on_close(self):
         """
@@ -102,6 +101,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         """
         self.property_changed.emit(self.__node_id, name, value)
 
+    # pylint: disable=R0912
     def _read_node(self, node):
         """
         Populate widget from a node.
@@ -261,8 +261,8 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         Returns:
             PropListWidget: tab child widget.
         """
-        if name in self.__tab_windows.keys():
-            raise AssertionError("Tab name {} already taken!".format(name))
+        if name in self.__tab_windows:
+            raise AssertionError(f"Tab name {name} already taken!")
         self.__tab_windows[name] = _PropertiesContainer(self)
         self.__tab.addTab(self.__tab_windows[name], name)
         return self.__tab_windows[name]
@@ -284,7 +284,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
             name (str): property name.
 
         Returns:
-            NodeGraphQtCore.Qt.custom_widgets.properties_bin.prop_widgets_abstract.BaseProperty: property widget.
+            BaseProperty: property widget.
         """
         if name == "name":
             return self.name_wgt
@@ -292,6 +292,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
             widget = prop_win.get_widget(name)
             if widget:
                 return widget
+        return None
 
     def get_all_property_widgets(self):
         """
@@ -362,7 +363,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
     property_changed = QtCore.Signal(str, str, object)
 
     def __init__(self, parent=None, node_graph=None):
-        super(PropertiesBinWidget, self).__init__(parent)
+        super().__init__(parent)
         self.setWindowTitle("Properties Bin")
         self._prop_list = _PropertiesList()
         self._limit = QtWidgets.QSpinBox()
@@ -409,9 +410,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         apply_dark_theme(self)
 
     def __repr__(self):
-        return "<{} object at {}>".format(
-            self.__class__.__name__, hex(id(self))
-        )
+        return f"<{self.__class__.__name__} object at {hex(id(self))}>"
 
     def __on_port_tree_visible_changed(self, node_id, visible, tree_widget):
         """
@@ -442,7 +441,8 @@ class PropertiesBinWidget(QtWidgets.QWidget):
             node_id (str): node id.
         """
         items = self._prop_list.findItems(node_id, QtCore.Qt.MatchExactly)
-        [self._prop_list.removeRow(i.row()) for i in items]
+        for i in items:
+            self._prop_list.removeRow(i.row())
 
     def __on_limit_changed(self, value):
         """
@@ -462,7 +462,8 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         Args:
             nodes (list[str]): list of node ids.
         """
-        [self.__on_prop_close(n) for n in nodes]
+        for n in nodes:
+            self.__on_prop_close(n)
 
     def __on_graph_property_changed(self, node, prop_name, prop_value):
         """
@@ -612,3 +613,4 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         if itm_find:
             item = itm_find[0]
             return self._prop_list.cellWidget(item.row(), 0)
+        return None

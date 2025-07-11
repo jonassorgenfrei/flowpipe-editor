@@ -1,9 +1,15 @@
+"""Qt Dark Theme widget styling module"""
+
 # pylint: disable=no-name-in-module
-from Qt import QtGui
-from Qt import QtCore
+from Qt import QtGui, QtCore, QtWidgets
 
 
-def apply_dark_theme(widget):
+def apply_dark_theme(widget: QtWidgets.QWidget):
+    """Apply a dark theme to the given widget.
+
+    Args:
+        widget (QtWidgets.QWidget): The widget to which the dark theme will be applied.
+    """
     palette = QtGui.QPalette()
     palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
     palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)

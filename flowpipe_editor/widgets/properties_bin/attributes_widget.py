@@ -1,12 +1,22 @@
+"""AttributesWidget for displaying flowpipe node attributes in a Qt Widget."""
+
 # pylint: disable=no-name-in-module
 from Qt import QtWidgets
-
+from flowpipe.plug import IPlug
 from . import attribute_widgets
 
 
 class AttributesWidget(QtWidgets.QWidget):
-    def __init__(self, plugs, parent=None):
-        super(AttributesWidget, self).__init__(parent)
+    """A widget to display attributes of Flowpipe node plugs."""
+
+    def __init__(self, plugs: list[IPlug], parent: QtWidgets.QWidget = None):
+        """Initialize the AttributesWidget with a list of plugs and an optional parent widget.
+        Args:
+            plugs (list[IPlug]): List of plugs to display attributes for.
+            parent (QtWidgets.QWidget, optional): Parent widget. Defaults to None.
+        """
+
+        super().__init__(parent)
         self.attributes = {}
         self.setLayout(QtWidgets.QVBoxLayout(self))
         self.scrollarea = QtWidgets.QScrollArea(self)

@@ -1,11 +1,20 @@
+'"""MetadataWidget for displaying metadata in a Qt Widget."""'
+
 import json
+
 # pylint: disable=no-name-in-module
 from Qt import QtWidgets
 
 
 class MetadataWidget(QtWidgets.QWidget):
-    def __init__(self, metadata, parent=None):
-        super(MetadataWidget, self).__init__(parent)
+    """Widget for displaying metadata in a formatted text area."""
+    def __init__(self, metadata: dict, parent: QtWidgets.QWidget = None):
+        """Initialize the MetadataWidget with metadata and parent widget.
+        Args:
+            metadata (dict): Metadata to display.
+            parent (QtWidgets.QWidget, optional): Parent widget. Defaults to None.
+        """
+        super().__init__(parent)
 
         # Create widgets
         self.text_edit = QtWidgets.QTextEdit()

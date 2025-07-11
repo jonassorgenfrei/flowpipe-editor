@@ -4,12 +4,11 @@ from pathlib import Path
 
 from flowpipe import Graph
 from NodeGraphQt import BaseNode, NodeGraph
+
 # pylint: disable=no-name-in-module
 from Qt import QtCore, QtWidgets
 
-from flowpipe_editor.widgets.dark_theme import (
-    apply_dark_theme
-)
+from flowpipe_editor.widgets.dark_theme import apply_dark_theme
 from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
     PropertiesBinWidget,
 )
@@ -19,6 +18,7 @@ BASE_PATH = Path(__file__).parent.resolve()
 
 class FlowpipeNode(BaseNode):
     """Flowpipe node for NodeGraphQt."""
+
     __identifier__ = "flowpipe"
     NODE_NAME = "FlowpipeNode"
 
@@ -38,10 +38,10 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
             parent (QtWidgets.QWidget, optional): Parent Qt Widget. Defaults to None.
         """
         super().__init__(parent)
-        
-        #apply_dark_theme(properties_bin)
+
+        # apply_dark_theme(properties_bin)
         self.setLayout(QtWidgets.QHBoxLayout(self))
-        
+
         # Create a horizontal splitter (left/right layout)
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, parent=self)
 
@@ -50,11 +50,11 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph = NodeGraph()
         self.flowpipe_graph = None
         self.graph.register_node(FlowpipeNode)
-        
+
         self.splitter.addWidget(self.graph.widget)
-        
+
         self.layout().addWidget(self.splitter)
-        
+
         # create a node properties bin widget.
         properties_bin = PropertiesBinWidget(
             parent=self, node_graph=self.graph
@@ -65,7 +65,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         # hide initially
         self.splitter.setSizes([1, 0])
-        
+
         # example show the node properties bin widget when a node is double-clicked.
         def display_properties_bin():
             if self.splitter.sizes()[1] == 0:
@@ -143,7 +143,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
     def load_graph(self, graph: Graph):
         """Load a Flowpipe graph into the editor widget.
-        
+
         Args:
             graph (Graph): Flowpipe graph to load.
         """

@@ -1,13 +1,26 @@
+"""DescriptionWidget for displaying node descriptions in a Qt Widget."""
+
 import os
 import textwrap
 import webbrowser
+
+from flowpipe import INode
+
 # pylint: disable=no-name-in-module
 from Qt import QtCore, QtWidgets
 
 
 class DescriptionWidget(QtWidgets.QWidget):
-    def __init__(self, flowpipe_node, parent=None):
-        super(DescriptionWidget, self).__init__(parent)
+    """A widget to display the description and code location of a Flowpipe node."""
+
+    def __init__(self, flowpipe_node: INode, parent: QtWidgets.QWidget = None):
+        """Initialize the DescriptionWidget with a Flowpipe node and an optional parent widget.
+
+        Args:
+            flowpipe_node (INode): The Flowpipe node to display information for.
+            parent (QtWidgets.QWidget, optional): Parent widget. Defaults to None.
+        """
+        super().__init__(parent)
 
         self.fp_node = flowpipe_node
 
@@ -44,4 +57,5 @@ class DescriptionWidget(QtWidgets.QWidget):
         self.open_code_btn.clicked.connect(self.open_code)
 
     def open_code(self):
+        """Open the code file of the Flowpipe node in a web or file browser."""
         webbrowser.open(self.fp_node.file_location)
