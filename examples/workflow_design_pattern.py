@@ -119,4 +119,7 @@ if __name__ == "__main__":
 
     window.show()
 
-    sys.exit(app.exec())
+    try:
+        sys.exit(app.exec())
+    except AttributeError:
+        sys.exit(app.exec_())
