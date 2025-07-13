@@ -4,27 +4,35 @@ from pathlib import Path
 from flowpipe import Graph, Node
 from Qt import QtGui, QtWidgets
 
+from flowpipe_editor import flowpipe_editor_widget
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+# example to overwrite the icons path for
+flowpipe_editor_widget.ICONS_PATH = Path(
+    Path(flowpipe_editor_widget.__file__).parent.resolve(),
+    "icons",
+)
+
+
 @Node(outputs=["camera_file"], metadata={"interpreter": "3dequalizer"})
 def CreateCamera():
-    """Creates a shot camera.
-    """
+    """Creates a shot camera."""
     return {"camera_file": "/abs/camera.abc"}
+
 
 @Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
 def MayaSceneGeneration(camera_file):
-    """Creates a Maya scene file for rendering.
-    """
+    """Creates a Maya scene file for rendering."""
     return {"scene_file": "/usd/scene.usd"}
+
 
 @Node(outputs=["renderings"], metadata={"interpreter": "houdini"})
 def HoudiniRender(frames, scene_file):
-    """Creates a Houdini scene file for rendering.
-    """
+    """Creates a Houdini scene file for rendering."""
     return {"renderings": "/renderings/file.%04d.exr"}
+
 
 @Node(outputs=["images"])
 def CheckImages(images):
@@ -58,17 +66,17 @@ def UpdateDatabase(id_, images):
 
 if __name__ == "__main__":
     graph = Graph(name="Rendering")
-    frames, batch_size=30, 30
+    frames, batch_size = 30, 30
     slapcomp = CreateSlapComp(graph=graph, template="nuke_template.nk")
     update_database = UpdateDatabase(graph=graph, id_=123456)
 
-    camera_creation = CreateCamera(graph=graph)    
-    scene_creation = MayaSceneGeneration(graph=graph)    
-    
+    camera_creation = CreateCamera(graph=graph)
+    scene_creation = MayaSceneGeneration(graph=graph)
+
     camera_creation.outputs["camera_file"].connect(
         scene_creation.inputs["camera_file"]
     )
-    
+
     for i in range(0, frames, batch_size):
         houdini_render = HoudiniRender(
             name="HoudiniRender{0}-{1}".format(i, i + batch_size),
@@ -106,13 +114,19 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor VFX Rendering Example")
     window.resize(1100, 800)
 
-    flowpipe_editor_widget = FlowpipeEditorWidget(parent=window)
+    flowpipe_editor_widget = FlowpipeEditorWidget(
+        expanded_properties=False, parent=window
+    )
     flowpipe_editor_widget.load_graph(graph)
     layout = QtWidgets.QVBoxLayout()
     layout.setContentsMargins(0, 0, 0, 0)

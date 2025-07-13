@@ -14,6 +14,7 @@ from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
 )
 
 BASE_PATH = Path(__file__).parent.resolve()
+ICONS_PATH = Path(BASE_PATH, "icons")
 
 
 class FlowpipeNode(BaseNode):
@@ -31,10 +32,16 @@ class FlowpipeNode(BaseNode):
 class FlowpipeEditorWidget(QtWidgets.QWidget):
     """Flowpipe editor widget for visualize flowpipe graphs."""
 
-    def __init__(self, parent: QtWidgets.QWidget = None):
+    def __init__(
+        self,
+        expanded_properties: bool = False,
+        parent: QtWidgets.QWidget = None,
+    ):
         """Initialize the Flowpipe editor widget.
 
         Args:
+            expanded_properties (bool, optional): Whether to expand the properties
+                                                    bin initially. Defaults to False.
             parent (QtWidgets.QWidget, optional): Parent Qt Widget. Defaults to None.
         """
         super().__init__(parent)
@@ -64,15 +71,13 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.splitter.addWidget(properties_bin)
 
         # hide initially
-        self.splitter.setSizes([1, 0])
-
-        # example show the node properties bin widget when a node is double-clicked.
-        def display_properties_bin():
-            if self.splitter.sizes()[1] == 0:
-                self.splitter.setSizes([700, 10])
+        if not expanded_properties:
+            self.collapse_properties_bin()
+        else:
+            self.expand_properties_bin()
 
         # wire function to "node_double_clicked" signal.
-        self.graph.node_selected.connect(display_properties_bin)
+        self.graph.node_selected.connect(self.expand_properties_bin)
 
         # get the main context menu.
         context_menu = self.graph.get_context_menu("graph")
@@ -84,6 +89,15 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         )
         layout_menu.add_command("Vertical", self.layout_graph_up, "Shift+2")
         apply_dark_theme(self)
+
+    def collapse_properties_bin(self):
+        """Collapse the properties bin to show node properties."""
+        self.splitter.setSizes([1, 0])
+
+    def expand_properties_bin(self):
+        """Expand the properties bin to show node properties."""
+        if self.splitter.sizes()[1] == 0:
+            self.splitter.setSizes([700, 10])
 
     def layout_graph_down(self):
         """
@@ -119,13 +133,15 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         # set icon based on interpreter
         if interpreter:
-            icon_path = Path(BASE_PATH, "icons", f"{interpreter}.png")
+            icon_path = Path(ICONS_PATH, f"{interpreter}.png")
             if icon_path.exists():
                 qt_node.set_icon(str(icon_path))
             elif interpreter:
-                qt_node.set_icon(str(Path(BASE_PATH, "icons", "python.png")))
+                qt_node.set_icon(
+                    str(Path(Path(BASE_PATH, "icons"), "python.png"))
+                )
         else:
-            qt_node.set_icon(str(Path(BASE_PATH, "icons", "python.png")))
+            qt_node.set_icon(str(Path(Path(BASE_PATH, "icons"), "python.png")))
 
         for input_ in fp_node.all_inputs().values():
             qt_node.add_input(input_.name)

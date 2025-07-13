@@ -90,7 +90,6 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         name_layout = QtWidgets.QHBoxLayout()
         name_layout.setContentsMargins(0, 0, 0, 0)
         name_layout.addWidget(icon_label)
-        name_layout.addWidget(QtWidgets.QLabel("name"))
         name_layout.addWidget(self.name_wgt)
         name_layout.addWidget(close_btn)
         layout = QtWidgets.QVBoxLayout(self)
