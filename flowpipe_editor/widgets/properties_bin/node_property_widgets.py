@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 
+from NodeGraphQt.constants import NodeEnum
 from NodeGraphQt.custom_widgets.properties_bin.node_property_factory import (
     NodePropertyWidgetFactory,
 )
@@ -17,12 +18,10 @@ from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import (
 # pylint: disable=no-name-in-module
 from Qt import QtCompat, QtCore, QtGui, QtWidgets
 
-from .attributes_widget import AttributesWidget
 from ..dark_theme import apply_dark_theme
+from .attributes_widget import AttributesWidget
 from .description import DescriptionWidget
 from .metadata_widget import MetadataWidget
-from pathlib import Path
-from NodeGraphQt.constants import NodeEnum
 
 
 class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
