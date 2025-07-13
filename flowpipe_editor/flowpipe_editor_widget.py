@@ -119,15 +119,10 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         # set icon based on interpreter
         if interpreter:
-            if interpreter == "houdini":
-                qt_node.set_icon(str(Path(BASE_PATH, "icons", "houdini.png")))
-            elif interpreter == "nuke":
-                qt_node.set_icon(str(Path(BASE_PATH, "icons", "nuke.png")))
-            elif interpreter == "mari":
-                qt_node.set_icon(str(Path(BASE_PATH, "icons", "mari.png")))
-            elif interpreter == "maya":
-                qt_node.set_icon(str(Path(BASE_PATH, "icons", "maya.png")))
-            else:
+            icon_path = Path(BASE_PATH, "icons", f"{interpreter}.png")
+            if icon_path.exists():
+                qt_node.set_icon(str(icon_path))
+            elif interpreter:
                 qt_node.set_icon(str(Path(BASE_PATH, "icons", "python.png")))
         else:
             qt_node.set_icon(str(Path(BASE_PATH, "icons", "python.png")))
