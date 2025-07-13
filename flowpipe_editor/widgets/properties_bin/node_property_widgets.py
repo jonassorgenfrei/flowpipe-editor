@@ -21,6 +21,8 @@ from .attributes_widget import AttributesWidget
 from ..dark_theme import apply_dark_theme
 from .description import DescriptionWidget
 from .metadata_widget import MetadataWidget
+from pathlib import Path
+from NodeGraphQt.constants import NodeEnum
 
 
 class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
@@ -41,6 +43,23 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
         self.__node_id = node.id
         self.__tab_windows = {}
         self.__tab = QtWidgets.QTabWidget()
+
+        pixmap = QtGui.QPixmap()
+        if node.icon():
+            pixmap = QtGui.QPixmap(node.icon())
+
+            if pixmap.size().height() > NodeEnum.ICON_SIZE.value:
+                pixmap = pixmap.scaledToHeight(
+                    NodeEnum.ICON_SIZE.value, QtCore.Qt.SmoothTransformation
+                )
+            if pixmap.size().width() > NodeEnum.ICON_SIZE.value:
+                pixmap = pixmap.scaledToWidth(
+                    NodeEnum.ICON_SIZE.value, QtCore.Qt.SmoothTransformation
+                )
+
+        icon_label = QtWidgets.QLabel(self)
+        icon_label.setPixmap(pixmap)
+        icon_label.setStyleSheet("background: transparent;")
 
         close_btn = QtWidgets.QPushButton()
         close_btn.setIcon(
@@ -71,6 +90,7 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
 
         name_layout = QtWidgets.QHBoxLayout()
         name_layout.setContentsMargins(0, 0, 0, 0)
+        name_layout.addWidget(icon_label)
         name_layout.addWidget(QtWidgets.QLabel("name"))
         name_layout.addWidget(self.name_wgt)
         name_layout.addWidget(close_btn)
@@ -545,7 +565,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
 
         self._prop_list.insertRow(0)
         rows = self._prop_list.rowCount() - 1
-        
+
         if rows >= (self.limit()):
             self._prop_list.removeRow(rows)
 

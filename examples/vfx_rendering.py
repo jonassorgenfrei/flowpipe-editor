@@ -8,8 +8,14 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+@Node(outputs=["camera_file"], metadata={"interpreter": "3dequalizer"})
+def CreateCamera():
+    """Creates a shot camera.
+    """
+    return {"camera_file": "/abs/camera.abc"}
+
 @Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
-def MayaSceneGeneration():
+def MayaSceneGeneration(camera_file):
     """Creates a Maya scene file for rendering.
     """
     return {"scene_file": "/usd/scene.usd"}
@@ -56,7 +62,12 @@ if __name__ == "__main__":
     slapcomp = CreateSlapComp(graph=graph, template="nuke_template.nk")
     update_database = UpdateDatabase(graph=graph, id_=123456)
 
+    camera_creation = CreateCamera(graph=graph)    
     scene_creation = MayaSceneGeneration(graph=graph)    
+    
+    camera_creation.outputs["camera_file"].connect(
+        scene_creation.inputs["camera_file"]
+    )
     
     for i in range(0, frames, batch_size):
         houdini_render = HoudiniRender(
