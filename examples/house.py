@@ -8,6 +8,7 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+
 class HireWorkers(INode):
     """A node can be derived from the INode interface.
 
@@ -50,6 +51,7 @@ def Party(attendees):
         )
     )
 
+
 if __name__ == "__main__":
     graph = Graph(name="Build a House")
     workers = HireWorkers(graph=graph, amount=4)
@@ -74,7 +76,11 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor House And Birthday Example")

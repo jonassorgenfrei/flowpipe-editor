@@ -8,6 +8,7 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+
 def compute_embeddings(image):
     """A mock function for a call to a deep learning model or a web service."""
     del image  # this is just a mock and doesn't do anything with the input
@@ -17,6 +18,7 @@ def compute_embeddings(image):
 def compare_embeddings(image_emb, reference_emb, threshold=2):
     """A mock function for the appropriate comparison of embeddings."""
     return abs(image_emb - reference_emb) < threshold
+
 
 class EmbeddingNode(INode):
     """The embedding node computes facial features from an image."""
@@ -90,12 +92,17 @@ def get_facematch_graph(threshold):
 
     return facematch_graph
 
+
 if __name__ == "__main__":
     facematch = get_facematch_graph(1)
-    
+
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor Dynamic Plug Names Example")

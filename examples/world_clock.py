@@ -4,11 +4,12 @@ from time import time
 from pathlib import Path
 
 from flowpipe import Graph, INode, InputPlug, Node, OutputPlug
-from Qt import QtGui,QtWidgets
+from Qt import QtGui, QtWidgets
 
 from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
+
 
 @Node(outputs=["time"])
 def CurrentTime():
@@ -18,6 +19,7 @@ def CurrentTime():
     The outputs are defined in the decorator explicitely.
     """
     return {"time": time()}
+
 
 class ConvertTime(INode):
     """A node can be derived from the INode interface.
@@ -35,6 +37,7 @@ class ConvertTime(INode):
     def compute(self, time, timezone):
         return {"converted_time": time + timezone * 60 * 60}
 
+
 @Node()
 def ShowTimes(times):
     """Nodes do not necessarily have to define output and input plugs."""
@@ -46,6 +49,7 @@ def ShowTimes(times):
             )
         )
     print("----------------------------------")
+
 
 if __name__ == "__main__":
     # The Graph holds the nodes
@@ -66,7 +70,11 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
 
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor World Clock Example")

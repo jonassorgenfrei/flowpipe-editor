@@ -9,6 +9,7 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+
 class Workflow(object):
     """Abstract base class defining a workflow, based on a flowpipe graph.
 
@@ -101,11 +102,15 @@ def UpdateDatabase(asset, images, status):
 
 if __name__ == "__main__":
     workflow = PublishWorkflow("model.ma")
-    
+
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
-    
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
+
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor Workflow Design Pattern Example")
     window.resize(1100, 800)

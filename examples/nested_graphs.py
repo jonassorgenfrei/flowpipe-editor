@@ -1,4 +1,5 @@
 """Nested graphs are supported in flowpipe."""
+
 import sys
 from pathlib import Path
 
@@ -9,10 +10,12 @@ from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
+
 @Node(outputs=["file"])
 def MyNode(file):
     # Something is done in here ...
     return {"file": file}
+
 
 if __name__ == "__main__":
     # A graph that fixes an incoming file, cleaning up messy names etc.
@@ -27,7 +30,6 @@ if __name__ == "__main__":
     cleanup_filename = MyNode(name="Cleanup Filename", graph=fix_file)
     change_lineendings = MyNode(name="Change Lineendings", graph=fix_file)
     cleanup_filename.outputs["file"].connect(change_lineendings.inputs["file"])
-
 
     # A second graph reads finds files, and extracts their contents into a database
     # +----------------+          +----------------------------+          +----------------+
@@ -44,7 +46,6 @@ if __name__ == "__main__":
     update_db = MyNode(name="Update DB", graph=udpate_db_from_file)
     find_file.outputs["file"].connect(values_from_file.inputs["file"])
     values_from_file.outputs["file"].connect(update_db.inputs["file"])
-
 
     # The second graph however relies on clean input files so the first graph can
     # be used within the second "udpate db" graph.
@@ -65,8 +66,12 @@ if __name__ == "__main__":
 
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(str(Path(BASE_PATH, 'flowpipe_editor', 'icons', 'flowpipe.png'))))
-    
+    app.setWindowIcon(
+        QtGui.QIcon(
+            str(Path(BASE_PATH, "flowpipe_editor", "icons", "flowpipe.png"))
+        )
+    )
+
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flowpipe-Editor Nestd Graphs Example")
     window.resize(1100, 800)
