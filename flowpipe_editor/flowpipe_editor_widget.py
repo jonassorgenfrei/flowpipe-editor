@@ -188,3 +188,5 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         nodes = self.graph.all_nodes()
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=True)
+        self.graph.center_on(nodes=nodes)
+        self.graph.fit_to_selection()
