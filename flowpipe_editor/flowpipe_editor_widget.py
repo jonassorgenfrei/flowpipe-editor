@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from flowpipe import Graph
+from flowpipe import Graph, INode
 from NodeGraphQt import BaseNode, NodeGraph
 
 # pylint: disable=no-name-in-module
@@ -46,7 +46,6 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """
         super().__init__(parent)
 
-        # apply_dark_theme(properties_bin)
         self.setLayout(QtWidgets.QHBoxLayout(self))
 
         # Create a horizontal splitter (left/right layout)
@@ -117,10 +116,16 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """Clear the graph and reset the flowpipe graph."""
         self.flowpipe_graph = Graph()
         self.graph.clear_session()
-        self.node_deselected()
 
-    def _add_node(self, fp_node, point):
-        """Helper function to add a Flowpipe node to the graph."""
+    def _add_node(self, fp_node: INode, point: QtCore.QPoint) -> BaseNode:
+        """Helper function to add a Flowpipe node to the graph.
+
+        Args:
+            fp_node (INode): Flowpipe node to add
+            point (QtCore.QPoint): Position to place the node in the graph
+        Returns:
+            BaseNode: The created NodegraphQT Node instance
+        """
         qt_node = self.graph.create_node(
             "flowpipe.FlowpipeNode",
             name=fp_node.name,
@@ -156,8 +161,9 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         """Load a Flowpipe graph into the editor widget.
 
         Args:
-            graph (Graph): Flowpipe graph to load.
+            graph (Graph): Flowpipe graph to load
         """
+        self.clear()
         self.flowpipe_graph = graph
         x_pos = 0
         for row in graph.evaluation_matrix:
