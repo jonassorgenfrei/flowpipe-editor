@@ -111,8 +111,7 @@ if __name__ == "__main__":
         nuke_render.outputs["renderings"].connect(
             quicktime.inputs["images"][str(i)]
         )
-
-    print(graph)
+        
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(
