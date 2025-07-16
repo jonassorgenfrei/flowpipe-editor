@@ -66,7 +66,7 @@ def UpdateDatabase(id_, images):
 
 if __name__ == "__main__":
     graph = Graph(name="Rendering")
-    frames, batch_size = 30, 30
+    frames, batch_size = 30, 10
     slapcomp = CreateSlapComp(graph=graph, template="nuke_template.nk")
     update_database = UpdateDatabase(graph=graph, id_=123456)
 
@@ -112,6 +112,7 @@ if __name__ == "__main__":
             quicktime.inputs["images"][str(i)]
         )
 
+    print(graph)
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(
