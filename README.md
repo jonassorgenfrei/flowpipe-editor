@@ -10,6 +10,13 @@ NOTE: In it's current state the Widget is a visualizer only not an editor.
 For interpreter based node icons the <i>interpreter</i> key in the node's metadata (if existing) is used to find the matching icon from: 
 `flowpipe_editor.flowpipe_editor_widget.ICONS_PATH`.
 
+## Installation
+The flowpipe editor can be easily installed using pip.
+
+```
+pip install flowpipe-editor
+```
+
 ## Example
 ```python
 from flowpipe import Graph, Node
