@@ -23,7 +23,11 @@ class DefaultPlugWidget(QtWidgets.QWidget):
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.lineedit = QtWidgets.QLineEdit(self)
         if isinstance(self.plug.value, dict):
-            self.lineedit.setText(json.dumps(self.plug.value))
+            try:
+                self.lineedit.setText(json.dumps(self.plug.value))
+            except TypeError:
+                # If the value cannot be serialized, fall back to str
+                self.lineedit.setText(str(self.plug.value))
         else:
             self.lineedit.setText(str(self.plug.value))
         self.layout().addWidget(self.lineedit)
