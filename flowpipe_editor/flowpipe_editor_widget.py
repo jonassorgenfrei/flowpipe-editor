@@ -53,7 +53,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
 
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.graph = NodeGraph()
+        self.graph = NodeGraph(parent=self)
         self.flowpipe_graph = None
         self.graph.register_node(FlowpipeNode)
 
@@ -190,3 +190,9 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=True)
         self.graph.center_on(nodes=nodes)
         self.graph.fit_to_selection()
+
+def toggle_node_search(graph):
+    """
+    show/hide the node search widget.
+    """
+    graph.toggle_node_search()
