@@ -57,6 +57,17 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.flowpipe_graph = None
         self.graph.register_node(FlowpipeNode)
 
+        data = [
+            {
+                "type": "command",
+                "label": "Node Search",
+                "file": __file__,
+                "function_name": "toggle_node_search",
+                "shortcut": "Tab",
+            }
+        ]
+        self.graph.set_context_menu("graph", data, "")
+
         self.splitter.addWidget(self.graph.widget)
 
         self.layout().addWidget(self.splitter)
@@ -190,6 +201,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=True)
         self.graph.center_on(nodes=nodes)
         self.graph.fit_to_selection()
+
 
 def toggle_node_search(graph):
     """
