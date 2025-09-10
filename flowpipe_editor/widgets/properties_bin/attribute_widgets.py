@@ -14,10 +14,23 @@ class PopeUpLineEdit(QtWidgets.QLineEdit):
     """A QLineEdit that opens a popup dialog on double-click to show/edit its content."""
 
     def __init__(self, label: str, parent: QtWidgets.QWidget = None):
+        """Initialize the PopeUpLineEdit with a label and parent.
+
+        Args:
+            label (str): The label for the popup dialog.
+            parent (QtWidgets.QWidget, optional): Parent widget. Defaults to None.
+        """
         super().__init__(parent)
         self.label = label
 
-    def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
+    def mouseDoubleClickEvent(
+        self, event: QtGui.QMouseEvent
+    ):  # pylint: disable=invalid-name
+        """Handle double-click events to open a popup dialog.
+
+        Args:
+            event (QtGui.QMouseEvent): The mouse event.
+        """
         # Open popup dialog on double-click
         dialog = PopupDialog(self.label, self.text(), self)
         dialog.exec_()
@@ -31,6 +44,12 @@ class PopupDialog(QtWidgets.QDialog):
     def __init__(
         self, label: str, value: str, parent: QtWidgets.QWidget = None
     ):
+        """Initialize the PopupDialog with a label, value, and parent.
+        Args:
+            label (str): The label for the dialog.
+            value (str): The initial text value to display.
+            parent (QtWidgets.QWidget, optional): Parent widget. Defaults to None.
+        """
         super().__init__(parent=parent)
         self.setWindowTitle(label)
         self.resize(400, 400)
