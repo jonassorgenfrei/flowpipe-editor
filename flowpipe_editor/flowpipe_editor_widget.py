@@ -166,11 +166,13 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.clear()
         self.flowpipe_graph = graph
         x_pos = 0
+        nodes_dict = {}
         for row in graph.evaluation_matrix:
             y_pos = 0
             x_diff = 250
             for fp_node in row:
-                self._add_node(fp_node, QtCore.QPoint(int(x_pos), int(y_pos)))
+                qt_node =self._add_node(fp_node, QtCore.QPoint(int(x_pos), int(y_pos)))
+                nodes_dict[fp_node.identifier] = qt_node
                 y_pos += 150
             x_pos += x_diff
         for fp_node in graph.all_nodes:
@@ -179,11 +181,9 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
                     in_index = list(
                         connection.node.all_inputs().values()
                     ).index(connection)
-                    self.graph.get_node_by_name(fp_node.name).set_output(
+                    nodes_dict[fp_node.identifier].set_output(
                         i,
-                        self.graph.get_node_by_name(
-                            connection.node.name
-                        ).input(in_index),
+                        nodes_dict[connection.node.identifier].input(in_index),
                     )
 
         nodes = self.graph.all_nodes()
