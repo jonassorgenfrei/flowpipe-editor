@@ -38,9 +38,9 @@ if __name__ == "__main__":
     # o file<>         |     +--->o file<>                     |     +--->o file<>         |
     # |           file o-----+    |                       file o-----+    |           file o
     # +----------------+          +----------------------------+          +----------------+
-    update_db_from_file = Graph(name="udpate_db_from_file")
-    #find_file = MyNode(name="Find File", graph=udpate_db_from_file)
-    find_file = MyNode(name="Change Lineendings", graph=update_db_from_file)
+    update_db_from_file = Graph(name="update_db_from_file")
+    find_file = MyNode(name="Find File", graph=update_db_from_file)
+
     values_from_file = MyNode(
         name="Read Values from File", graph=update_db_from_file
     )
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     fix_file.outputs["clean_file"].connect(
         update_db_from_file["Read Values from File"].inputs["file"]
     )
-    print(fix_file)
+
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(
