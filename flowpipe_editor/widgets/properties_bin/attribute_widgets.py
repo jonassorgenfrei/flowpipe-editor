@@ -17,7 +17,8 @@ class PopeUpLineEdit(QtWidgets.QLineEdit):
         super().__init__(parent)
         self.label = label
 
-    def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
+    def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):  # pylint: disable=invalid-name
+        """Open a popup dialog to edit the line edit contents on double-click."""
         # Open popup dialog on double-click
         dialog = PopupDialog(self.label, self.text(), self)
         dialog.exec_()

@@ -1,11 +1,15 @@
 import sys
+from dataclasses import asdict
 from pathlib import Path
 
 from flowpipe import Graph, Node
 from Qt import QtGui, QtWidgets
 
 from flowpipe_editor import flowpipe_editor_widget
-from flowpipe_editor.flowpipe_editor_widget import FlowpipeEditorWidget
+from flowpipe_editor.flowpipe_editor_widget import (
+    FlowpipeEditorWidget,
+    FlowpipeEditorWidgetStyle,
+)
 
 BASE_PATH = Path(__file__).parent.parent.resolve()
 
@@ -16,21 +20,43 @@ flowpipe_editor_widget.ICONS_PATH = Path(
 )
 
 
-
-
-@Node(outputs=["camera_file"], metadata={"interpreter": "3dequalizer"})
+@Node(
+    outputs=["camera_file"],
+    metadata={
+        "interpreter": "3dequalizer",
+        "FlowpipeEditorWidgetStyle": asdict(
+            FlowpipeEditorWidgetStyle(color="#1E0500")
+        ),
+    },
+)
 def CreateCamera():
     """Creates a shot camera."""
     return {"camera_file": "/abs/camera.abc"}
 
 
-@Node(outputs=["scene_file"], metadata={"interpreter": "maya"})
+@Node(
+    outputs=["scene_file"],
+    metadata={
+        "interpreter": "maya",
+        "FlowpipeEditorWidgetStyle": asdict(
+            FlowpipeEditorWidgetStyle(color="#001574")
+        ),
+    },
+)
 def MayaSceneGeneration(camera_file):
     """Creates a Maya scene file for rendering."""
     return {"scene_file": "/usd/scene.usd"}
 
 
-@Node(outputs=["renderings"], metadata={"interpreter": "houdini"})
+@Node(
+    outputs=["renderings"],
+    metadata={
+        "interpreter": "houdini",
+        "FlowpipeEditorWidgetStyle": asdict(
+            FlowpipeEditorWidgetStyle(color="#7A2400")
+        ),
+    },
+)
 def HoudiniRender(frames, scene_file):
     """Creates a Houdini scene file for rendering."""
     return {"renderings": "/renderings/file.%04d.exr"}
@@ -42,7 +68,18 @@ def CheckImages(images):
     return {"images": images}
 
 
-@Node(outputs=["slapcomp"], metadata={"interpreter": "nuke"})
+@Node(
+    outputs=["slapcomp"],
+    metadata={
+        "interpreter": "nuke",
+        "FlowpipeEditorWidgetStyle": asdict(
+            FlowpipeEditorWidgetStyle(
+                color="#1E0500",
+                icon=Path(BASE_PATH, "flowpipe_editor", "icons", "star.png"),
+            )
+        ),
+    },
+)
 def CreateSlapComp(images, template):
     """Create a nuke slapcomp scene file from the given images and template."""
     return {"slapcomp": "slapcomp.nk"}
@@ -113,7 +150,7 @@ if __name__ == "__main__":
         nuke_render.outputs["renderings"].connect(
             quicktime.inputs["images"][str(i)]
         )
-        
+
     # Display the graph
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(
