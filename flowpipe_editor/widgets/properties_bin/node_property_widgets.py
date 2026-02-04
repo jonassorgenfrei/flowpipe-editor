@@ -11,9 +11,7 @@ from NodeGraphQt.custom_widgets.properties_bin.node_property_widgets import (
     _PropertiesContainer,
     _PropertiesList,
 )
-from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import (
-    PropLineEdit,
-)
+from NodeGraphQt.custom_widgets.properties_bin.prop_widgets_base import PropLineEdit
 
 # pylint: disable=no-name-in-module
 from Qt import QtCompat, QtCore, QtGui, QtWidgets
@@ -171,26 +169,27 @@ class FlowpipeNodePropEditorWidget(QtWidgets.QWidget):
                     continue
 
                 widget = widget_factory.get_widget(wid_type)
-                widget.set_name(prop_name)
+                if widget:
+                    widget.set_name(prop_name)
 
-                tooltip = None
-                if prop_name in common_props.keys():
-                    if "items" in common_props[prop_name].keys():
-                        widget.set_items(common_props[prop_name]["items"])
-                    if "range" in common_props[prop_name].keys():
-                        prop_range = common_props[prop_name]["range"]
-                        widget.set_min(prop_range[0])
-                        widget.set_max(prop_range[1])
-                    if "tooltip" in common_props[prop_name].keys():
-                        tooltip = common_props[prop_name]["tooltip"]
-                prop_window.add_widget(
-                    name=prop_name,
-                    widget=widget,
-                    value=value,
-                    label=prop_name.replace("_", " "),
-                    tooltip=tooltip,
-                )
-                widget.value_changed.connect(self._on_property_changed)
+                    tooltip = None
+                    if prop_name in common_props.keys():
+                        if "items" in common_props[prop_name].keys():
+                            widget.set_items(common_props[prop_name]["items"])
+                        if "range" in common_props[prop_name].keys():
+                            prop_range = common_props[prop_name]["range"]
+                            widget.set_min(prop_range[0])
+                            widget.set_max(prop_range[1])
+                        if "tooltip" in common_props[prop_name].keys():
+                            tooltip = common_props[prop_name]["tooltip"]
+                    prop_window.add_widget(
+                        name=prop_name,
+                        widget=widget,
+                        value=value,
+                        label=prop_name.replace("_", " "),
+                        tooltip=tooltip,
+                    )
+                    widget.value_changed.connect(self._on_property_changed)
 
         # Flowpipe patch
         if hasattr(node, "fp_node"):
@@ -384,6 +383,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         super().__init__(parent)
         self.setWindowTitle("Properties Bin")
         self._prop_list = _PropertiesList()
+        self._node_graphs = set()
         self._limit = QtWidgets.QSpinBox()
         self._limit.setToolTip("Set display nodes limit.")
         self._limit.setMaximum(10)
@@ -420,15 +420,42 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         layout.addWidget(self._prop_list, 1)
 
         # wire up node graph.
-        node_graph.add_properties_bin(self)
-        node_graph.node_selected.connect(self.add_node)
-        node_graph.nodes_deleted.connect(self.__on_nodes_deleted)
-        node_graph.property_changed.connect(self.__on_graph_property_changed)
+        self.register_graph(node_graph)
 
         apply_dark_theme(self)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object at {hex(id(self))}>"
+
+    def register_graph(self, node_graph):
+        """
+        Register an additional node graph with this properties bin.
+
+        Args:
+            node_graph (NodeGraphQtCore.Qt.NodeGraph): node graph.
+        """
+        if not node_graph or node_graph in self._node_graphs:
+            return
+        self._node_graphs.add(node_graph)
+        node_graph.node_selected.connect(self.add_node)
+        node_graph.nodes_deleted.connect(self.__on_nodes_deleted)
+        node_graph.property_changed.connect(self.__on_graph_property_changed)
+
+    def _find_node_by_id(self, node_id):
+        """
+        Find a node by id across all registered graphs.
+
+        Args:
+            node_id (str): node id.
+
+        Returns:
+            NodeGraphQtCore.Qt.NodeObject or None: node object.
+        """
+        for graph in self._node_graphs:
+            node = graph.get_node_by_id(node_id)
+            if node:
+                return node
+        return None
 
     def __on_port_tree_visible_changed(self, node_id, visible, tree_widget):
         """
@@ -512,8 +539,12 @@ class PropertiesBinWidget(QtWidgets.QWidget):
             prop_name (str): node property name.
             prop_value (object): node property value.
         """
-        if not self._block_signal:
-            self.property_changed.emit(node_id, prop_name, prop_value)
+        if self._block_signal:
+            return
+        node = self._find_node_by_id(node_id)
+        if node and node.get_property(prop_name) != prop_value:
+            node.set_property(prop_name, prop_value)
+        self.property_changed.emit(node_id, prop_name, prop_value)
 
     def create_property_editor(self, node):
         """

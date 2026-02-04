@@ -96,12 +96,12 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.layout().addWidget(self.splitter)
 
         # create a node properties bin widget.
-        properties_bin = PropertiesBinWidget(
+        self.properties_bin = PropertiesBinWidget(
             parent=self, node_graph=self.graph
         )
 
-        properties_bin.setAutoFillBackground(True)
-        self.splitter.addWidget(properties_bin)
+        self.properties_bin.setAutoFillBackground(True)
+        self.splitter.addWidget(self.properties_bin)
 
         # hide initially
         if not expanded_properties:
@@ -325,6 +325,8 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         fp_graph = getattr(sub_graph.node, "fp_graph", None)
         node_map = self._hydrate_flowpipe_nodes(sub_graph)
         self._ensure_subgraph_connections(fp_graph, sub_graph, node_map)
+        if hasattr(self, "properties_bin"):
+            self.properties_bin.register_graph(sub_graph)
 
     @staticmethod
     def _collect_connected_graphs(graph: Graph):
