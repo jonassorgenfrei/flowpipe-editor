@@ -74,7 +74,7 @@ if __name__ == "__main__":
     )
 
     window = QtWidgets.QWidget()
-    window.setWindowTitle("Flowpipe-Editor Nestd Graphs Example")
+    window.setWindowTitle("Flowpipe-Editor Nested Graphs Example")
     window.resize(1100, 800)
 
     flowpipe_editor_widget = FlowpipeEditorWidget(parent=window)
