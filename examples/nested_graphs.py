@@ -38,12 +38,13 @@ if __name__ == "__main__":
     # o file<>         |     +--->o file<>                     |     +--->o file<>         |
     # |           file o-----+    |                       file o-----+    |           file o
     # +----------------+          +----------------------------+          +----------------+
-    udpate_db_from_file = Graph(name="udpate_db_from_file")
-    find_file = MyNode(name="Find File", graph=udpate_db_from_file)
+    update_db_from_file = Graph(name="update_db_from_file")
+    find_file = MyNode(name="Find File", graph=update_db_from_file)
+
     values_from_file = MyNode(
-        name="Read Values from File", graph=udpate_db_from_file
+        name="Read Values from File", graph=update_db_from_file
     )
-    update_db = MyNode(name="Update DB", graph=udpate_db_from_file)
+    update_db = MyNode(name="Update DB", graph=update_db_from_file)
     find_file.outputs["file"].connect(values_from_file.inputs["file"])
     values_from_file.outputs["file"].connect(update_db.inputs["file"])
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     # Now the update_db graph can connect nodes to the fix_file graph
     find_file.outputs["file"].connect(fix_file.inputs["file_to_clean"])
     fix_file.outputs["clean_file"].connect(
-        udpate_db_from_file["Read Values from File"].inputs["file"]
+        update_db_from_file["Read Values from File"].inputs["file"]
     )
 
     # Display the graph
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     )
 
     window = QtWidgets.QWidget()
-    window.setWindowTitle("Flowpipe-Editor Nestd Graphs Example")
+    window.setWindowTitle("Flowpipe-Editor Nested Graphs Example")
     window.resize(1100, 800)
 
     flowpipe_editor_widget = FlowpipeEditorWidget(parent=window)
