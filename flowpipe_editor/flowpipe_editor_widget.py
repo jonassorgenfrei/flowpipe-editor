@@ -1,5 +1,6 @@
 """Class that provides the Qt Widget."""
 
+from dataclasses import dataclass
 from pathlib import Path
 
 from flowpipe import Graph, INode
@@ -15,6 +16,14 @@ from flowpipe_editor.widgets.properties_bin.node_property_widgets import (
 
 BASE_PATH = Path(__file__).parent.resolve()
 ICONS_PATH = Path(BASE_PATH, "icons")
+
+
+@dataclass
+class FlowpipeEditorWidgetStyle:
+    """Styling information for FlowpipeEditorWidget nodes."""
+
+    color: str | None = None
+    icon: Path | None = None
 
 
 class FlowpipeNode(BaseNode):
@@ -148,6 +157,18 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         else:
             qt_node.set_icon(str(Path(Path(BASE_PATH, "icons"), "python.png")))
 
+        # styling information
+        if fp_node.metadata:
+            editor_metadata = fp_node.metadata.get("FlowpipeEditorWidgetStyle")
+            if editor_metadata:
+                style = FlowpipeEditorWidgetStyle(**editor_metadata)
+                if style.color:
+                    clr = style.color.strip("#")
+                    clr_t = tuple(int(clr[i : i + 2], 16) for i in (0, 2, 4))
+                    qt_node.set_color(clr_t[0], clr_t[1], clr_t[2])
+                if style.icon and style.icon.exists():
+                    qt_node.set_icon(str(style.icon))
+
         for input_ in fp_node.all_inputs().values():
             qt_node.add_input(input_.name)
         for output in fp_node.all_outputs().values():
@@ -190,6 +211,7 @@ class FlowpipeEditorWidget(QtWidgets.QWidget):
         self.graph.auto_layout_nodes(nodes=nodes, down_stream=True)
         self.graph.center_on(nodes=nodes)
         self.graph.fit_to_selection()
+
 
 def toggle_node_search(graph):
     """
